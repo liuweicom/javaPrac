@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+<constant name="struts.devMode" value="true"/>
+ 
+<package name="p3" extends="struts-default">
+<!--  声明自定义拦截器 --> 
+<interceptors>
+	<interceptor name="demo1Interceptor" class="com.itheima.web.interceptor.Demoiterceptor"></interceptor>
+</interceptors>
+<global-results>
+	<result name="input">/login.jsp</result>
+</global-results>
+	<action name="action1" class="com.itheima.web.action.DemoAction" method="login">
+	<interceptor-ref name="demo1Interceptor" ></interceptor-ref>
+	<result name="success">/demo1.jsp</result>
+	</action>
+ </package>   
+
+
+<!-- 使用自定义拦截器，检查登录，最基本的配置方式
+	其中存在的问题：
+		当我们使用了自定义拦截器之后，默认的拦截器就不在工作
+<package name="p2" extends="struts-default">
+<interceptors>声明拦截器
+	<interceptor name="demo1Interceptor" class="com.itheima.web.interceptor.Demoiterceptor"></interceptor>
+</interceptors>
+<global-results>全局结果视图
+	<result name="input">/login.jsp</result>
+</global-results>
+用户登录时，不需要检查登录的拦截器工作
+	<action name="action1" class="com.itheima.web.action.DemoAction" method="login">
+	<result name="success" type="redirectAction">main</result>
+	</action>
+	前往主页的动作名称，需要检查登录的拦截器工作
+	<action name="main" class="com.itheima.web.action.DemoAction">
+	<interceptor-ref name="demo1Interceptor" ></interceptor-ref>
+	<result name="success">/main.jsp</result>
+	</action>
+	前往另一个网页的动作名称，需要检查登录拦截器工作
+	<action name="showOther" class="com.itheima.web.action.DemoAction">
+	<interceptor-ref name="demo1Interceptor" ></interceptor-ref>
+	<result name="success">/otherone.jsp</result>
+	</action>
+</package> -->
+
+
+ 
+<!--1针对上面的问题，我们的解决办法是，把默认的拦截器 也配置进来
+<package name="p2" extends="struts-default">
+<interceptors>
+	<interceptor name="demo1Interceptor" class="com.itheima.web.interceptor.Demoiterceptor"></interceptor>
+</interceptors>
+<global-results>
+	<result name="input">/login.jsp</result>
+</global-results>
+	<action name="action1" class="com.itheima.web.action.DemoAction" method="login">
+	<result name="success" type="redirectAction">main</result>
+	</action>
+	<action name="main" class="com.itheima.web.action.DemoAction">
+		加入自定义拦截器，和默认的拦截器
+	<interceptor-ref name="demo1Interceptor" ></interceptor-ref>
+	<interceptor-ref name="defaultStack"></interceptor-ref>
+	<result name="success">/main.jsp</result>
+	</action>
+	<action name="showOther" class="com.itheima.web.action.DemoAction">
+		加入自定义拦截器，和默认的拦截器栈
+	<interceptor-ref name="defaultStack"></interceptor-ref>
+	<interceptor-ref name="demo1Interceptor" ></interceptor-ref>
+	<result name="success">/otherone.jsp</result>
+	</action>
+</package> -->
+
+
+<!--2.1中存在的问题，当如果需要拦截的动作很多的时候，写起来很繁琐  
+<package name="p2" extends="struts-default">
+<interceptors>
+	<interceptor name="demo1Interceptor" class="com.itheima.web.interceptor.Demoiterceptor"></interceptor>
+	定义一个拦截器栈，吧我们定义的的拦截器和默认的拦截器栈放到一块
+	<interceptor-stack name="myDefaultStack">
+		<interceptor-ref name="defaultSack" ></interceptor-ref>
+		<interceptor-ref name="demo1Interceptor"></interceptor-ref>
+	</interceptor-stack>
+</interceptors>
+<global-results>
+	<result name="input">/login.jsp</result>
+</global-results>
+	<action name="action1" class="com.itheima.web.action.DemoAction" method="login">
+	<result name="success" type="redirectAction">main</result>
+	</action>
+	<action name="main" class="com.itheima.web.action.DemoAction">
+	直接引入我们自己的定义的拦截器栈，里面已经包含了默认的拦截器栈
+	<interceptor-ref name="myDefaultStack" ></interceptor-ref>
+	<result name="success">/main.jsp</result>
+	</action>
+	<action name="showOther" class="com.itheima.web.action.DemoAction">
+	直接引入我们自己的定义的拦截器栈，里面已经包含了默认的拦截器栈
+	<interceptor-ref name="myDefaultStack"></interceptor-ref>
+	<result name="success">/otherone.jsp</result>
+	</action>
+</package>
+-->
+
+ 
+<!-- 3.2中存在的问题：还需要在每个需要用到的动作方法中引入拦截器栈
+	解决办法：使用覆盖struts-default。xml配置文件中的默认拦截器栈，让我们这个自己定义的拦截器栈改为默认的
+<package name="p2" extends="struts-default">
+<interceptors>
+	<interceptor name="demo1Interceptor" class="com.itheima.web.interceptor.Demoiterceptor"></interceptor>
+	<interceptor-stack name="myDefaultStack">
+		<interceptor-ref name="defaultSack" ></interceptor-ref>
+		<interceptor-ref name="demo1Interceptor"></interceptor-ref>
+	</interceptor-stack>
+</interceptors>
+覆盖了struts-default.xml中定义的默认拦截器，！！！！记得顺序，引入修改的默认栈的顺序要全局结果视图
+<default-interceptor-ref name="myDefaultStack"></default-interceptor-ref>
+<global-results>
+	<result name="input">/login.jsp</result>
+</global-results>
+	<action name="action1" class="com.itheima.web.action.DemoAction" method="login">
+	<result name="success" type="redirectAction">main</result>
+	</action>
+	<action name="main" class="com.itheima.web.action.DemoAction">
+	<result name="success">/main.jsp</result>
+	</action>
+	<action name="showOther" class="com.itheima.web.action.DemoAction">
+	<result name="success">/otherone.jsp</result>
+	</action>
+</package> 
+-->
+
+
+<!-- 4.3中存在的问题，当我们配置了默认的拦截器栈时连登录都被默认拦截
+	解决办法：在AbstractInterceptor的子类中还有一个抽象类的MethodFilterInterceptor,里面提供了两个属性
+		excludeMethods：哪些方法不需要拦截
+		includeMethods：哪些方法需要拦截
+<package name="p1" extends="struts-default">
+<interceptors>
+	<interceptor name="demo2Interceptor" class="com.itheima.web.interceptor.Demoiterceptor1"></interceptor>
+	<interceptor-stack name="myDefaultStack">
+		<interceptor-ref name="defaultSack" ></interceptor-ref>
+		<interceptor-ref name="demo2Interceptor">
+			给自定义拦截器注入参数，告知哪些不需要注入
+			<param name="excludeMethods">login</param>
+		</interceptor-ref>
+	</interceptor-stack>
+</interceptors>
+<default-interceptor-ref name="myDefaultStack"></default-interceptor-ref>
+
+<global-results>
+	<result name="input">/login.jsp</result>
+</global-results>
+	<action name="action1" class="com.itheima.web.action.DemoAction" method="login">
+	<result name="success" type="redirectAction">main</result>
+	</action>
+	<action name="main" class="com.itheima.web.action.DemoAction">
+	<result name="success">/main.jsp</result>
+	</action>
+	<action name="showOther" class="com.itheima.web.action.DemoAction">
+	<result name="success">/otherone.jsp</result>
+	</action>
+</package> -->
+
+
+<!-- 5.4中存在的问题：当我们声明拦截器和定义拦截器栈时，有可能更不不知道哪些方法需要拦截，哪些不需要
+	解决办法，在使用拦截器的时候注入参数，高数拦截器哪些需要拦截，哪些不需要 -->
+<package name="p1" extends="struts-default">
+<interceptors>
+	<interceptor name="demo2Interceptor" class="com.itheima.web.interceptor.Demoiterceptor1"></interceptor>
+	<interceptor-stack name="myDefaultStack">
+		<interceptor-ref name="defaultStack" ></interceptor-ref>
+		<interceptor-ref name="demo2Interceptor"></interceptor-ref>
+	</interceptor-stack>
+</interceptors>
+<default-interceptor-ref name="myDefaultStack"></default-interceptor-ref>
+<global-results>
+	<result name="input">/login.jsp</result>
+</global-results>
+	<action name="action" class="com.itheima.web.action.DemoAction" method="login">
+		<!-- 在引用自定义拦截器栈的时候，给指定的拦截器注入 参数，方法是：拦截器名称+属性-->
+	<interceptor-ref name="myDefaultStack" >
+		<param name="excludeMethods">login</param>
+	</interceptor-ref>
+	<result name="success" type="redirectAction">main1</result>
+	</action>
+	<action name="main1" class="com.itheima.web.action.DemoAction">
+	<result name="success">/main.jsp</result>
+	</action>
+	<action name="showOther1" class="com.itheima.web.action.DemoAction">
+	<result name="success">/otherone.jsp</result>
+	</action>
+</package> 
+</struts>

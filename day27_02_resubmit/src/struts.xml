@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+<constant name="struts.devMode" value="true"></constant>
+	<package name="pg1" extends="struts-default">
+		<action name="login1" class="com.itheima.web.action.Demo1Action">
+		<!-- 由于默认的拦截器栈中，没有令牌的拦截器，所以需要把默认的拦截器栈配上 -->
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<!-- 使用Struts2提供的一个令牌的拦截器：token，invalid。token总是在你重复提交后，告诉你，不要重复提交，没什么意义，做完了再告诉你不可以 -->
+		<!-- <interceptor-ref name="token"></interceptor-ref> -->
+		<!-- 使用Structs提供的一个令牌拦截器，sessiontoken,这个，在重复提交时，不会触发action函数，不走函数 -->
+		<interceptor-ref name="tokenSession"></interceptor-ref>
+		<!-- <result>/success.jsp</result>请求转发不行 -->
+			<result type="redirect">/success.jsp</result>
+			<result name="invalid.token">/message.jsp</result>
+		</action> 
+	</package>
+</struts>
