@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 开启动态方法调用 -->
+	<constant name="struts.devMode" value="true"></constant>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+
+	<package name="p11" extends="struts-default" >
+		<!-- 第一种创建动作类的方式原始的老的POJO对象 -->
+		<action name="action2" class="com.itheima.web.action.DemoAction" method="user2">
+		<result name="success">/success.jsp</result>
+		</action>
+		<!-- 第二种创建动作类的方式，实现接口action 和action的接口方法 action中带有五个常用的变量 -->
+		<action name="action3" class="com.itheima.web.action.DemoAction2">
+		<result name="success">/success1.jsp</result>
+		</action>
+		<!-- 第三种，开发中常用的方式，继承ActionSupport，action中没有写method方法，默认执行execute -->
+		<action name="action4" class="com.itheima.web.action.DemoAction3">
+		<result name="success">/success.jsp</result>
+		</action>
+		
+		<action name="defaultAction">
+			<result name="success">/success.jsp</result>
+		</action>
+		<action name="*_*" class="com.itheima.web.action.{2}Action" method="{1}{2}">
+		<result name="success">/{1}{2}.jsp</result>
+		</action>
+		<action name="user" class="com.itheima.web.action.UserAction">
+		<result name="success">/success.jsp</result>
+		</action>
+	</package>
+	
+	
+</struts>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
