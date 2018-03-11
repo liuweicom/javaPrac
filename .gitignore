@@ -1,0 +1,28 @@
+node_modules
+
+# Users Environment Variables
+.lock-wscript
+
+# maven
+target/
+log/
+.gitkeep
+
+
+# eclipse
+.settings/
+.project
+.classpath
+
+# idea
+.idea/
+*.ipr
+*.iml
+*.iws
+
+# system
+.DS_Store
+Thumbs.db
+
+#myeclipse
+.metadata/
