@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+     <!-- ORM元数据  表对象关系映射文件 
+    	package : 配置该配置文件中类所在的包.  -->
+    <hibernate-mapping package="com.liuweicom.domain">
+    	<class name="Customer" table="customer">
+    		<id name="id" column="id">
+    			<generator class="native"></generator>
+    		</id>
+    		
+    		<property name="name" column="name" type="string"></property>
+    		<!-- 表达一堆多关系的集合
+    		name：集合的属性名称
+    		inverse：是否将关系的维护反转给对方 ，默认值为false
+    		true：在Customer中放弃维护外键关系
+    		cascade： 级联操作
+    			save-update：级联保存，级联修改，保存A时，同时保存B
+    			delete：删除A，同时删除B，AB都不存在
+    			delete-orphan：孤儿删除，接触关系，同时将B删除，A存在的
+    			如果需要配置多项，使用都好隔开，<set cascade="save-update,delete">
+    			
+    			all:save-update 和delete 整合
+    			all-delete-orphan：三个整合-->
+    			<set name="orders" inverse="false" cascade="all-delete-orphan">
+    				<key column="cid">
+    				</key>
+    				<!-- ont-to-many:表达，Customer 与Orders的关系是一对多
+    				class：表达式关联的另一方的完整类名 -->
+    				<one-to-many class="Order"/>
+    			</set>
+    	</class>
+    </hibernate-mapping>

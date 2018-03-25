@@ -2,12 +2,56 @@
 <!DOCTYPE hibernate-mapping PUBLIC 
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    <!--ORM：元数据 表对象关系映射文件
+    package： 配置改配置文件中类所在的包  -->
     <hibernate-mapping>
+    <!--class:配置实体与表的关系
+    	name：填写实体的完整类名
+    	table：与实体对应表的名称
+    	dynamic-insert：动态插入 默认值为false
+    		true=》如果字段为null，不参与insert语句
+    	dynamic-update：动态插入 默认值为false
+    		true=》如果字段为null，不参与update语句
+    	  -->
     	<class name="com.liuweicom.a_hello.User" table="t_user">
     		<id name="id" column="id">
+    		<!-- id: 配置实体与表中 id对应
+    		name：实体表名
+    		colu：主键在表中的列名
+    		length：列的数据长度
+    		unsaved-value（不常用）指定主键为什么值，时保存为null
+    		access（强烈推荐不用）field 那么在操作属性时,会直接操作对应的字段而不是get/set方法
+    		 -->
     			<generator class="native"></generator>
+    			<!--主键生成策略
+    				increment： 数据库自己生成主键：先从数据中获得最大的id，将id+1作为新的主键值传入
+    				identity：依赖数据库的主键自增功能
+    				sequence：序列，依赖于数据中的序列功能（Oracle）
+    				4.hilo(纯了解,永远用不到) : Hibernate自己实现序列的算法,自己生成主键. (hilo算法 )
+					5.native 自动根据数据库判断,三选一. identity|sequence|hilo
+					UUID：生成32位的不重复随机字符串当做主键
+					assigned：自己指定主键值，表的主键是自然主键是使用
+    			  -->
     		</id>
     		
+    		<!--
+    		property : 实体中属性与表中列的对应
+			 name : 实体中属性名称
+			 column : 表中列的名称
+			 length : 数据长度
+			 precision：小数点后的精度
+			 scale：有效位数
+			 insert（一般不用）：改属性加入insert
+			 update（一般不用）：改属性加入update
+			 not-null：指定属性的约束是否使用 非空
+			 unique：指定属性的约束是否使用 唯一
+    		  -->
+    		   <!-- 
+		 	type: 表达该属性的类型
+		 	可以用三种方式指定属性
+		 	java类型		 		 数据库类型指定			Hibernate类型指定
+		 	java.lang.String	varchar				string
+		  -->
     		<property name="name" column="name"></property>
     		<property name="password" column="pasword"></property>
     		<property name="sal" column="sal" ></property>

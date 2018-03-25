@@ -1,0 +1,58 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+<session-factory>
+	<!-- property 用于配置Hibernate中的属性 -->
+
+	<!--hibernate.connection.driver_class：数据库属性的连接 -->
+	<property name="hibernate.connection.driver_class">
+		com.mysql.jdbc.Driver
+	</property>
+	<!-- hibernate.connection.username： 数据库的用户名 -->
+	<property name="hibernate.connection.username">root</property>
+	<!-- hibernate.connection.password：密码 -->
+	<property name="hibernate.connection.password">root</property>
+	<!-- hibernate.connection.url ：数据的地址路径-->
+	<property name="hibernate.connection.url">
+		jdbc:mysql://localhost:3306/day25
+	</property>
+
+
+	<!-- show_sql：操作数据库时，会向控制台打印SQL语句-->
+	<property name="show_sql">true</property>
+
+	<!-- format_sql：打印SQL语句前，会将SQL语句先格式化-->
+	<property name="format_sql">true</property>
+
+	<!-- hbm2ddl ：生成表结构的配置
+		update（经常用）如果当前结果不存在表结构，重新生成表结构
+		如果存在与表结构与实体一致，那么不修改表结构
+		如果存在的表结构与实体不一致，表结构会新增新的列，但是同事保留以前的列
+		create：每次启动hib都会生成表结构
+		create-drop（极少）每次hibernate启动的时候重新生成，hibernate结束的时候删除表结构
+		validate：不会自动创建表结构，也不会维护表结构，只会校验表结构，不同是抛出异常-->
+	<property name="hbm2ddl.auto">update</property>
+	<!-- 数据库方言配置 
+		org.hibernate.dialect.MySQLDialect (选择最短的)-->
+	<property name="hibernate.dialect">
+		org.hibernate.dialect.MySQLDialect
+	</property>
+	<!-- 开启事务自动提交-->
+	<property name="hibernate.connection.autocommit">true</property>
+	<!--hibernate.current_session_context_class 将Session与线程绑定=》只有配置了改配置，才能使用getCurrentSession -->
+	<property name="hibernate.current_session_context_class">
+		thread
+	</property>
+
+
+	<!-- 引入ORM 映射文件 
+		填写src之后的路径
+	-->
+
+	<mapping resource="com/liuweicom/domain/User.hbm.xml" />
+	<mapping resource="com/liuweicom/domain/Customer.hbm.xml" />
+	<mapping resource="com/liuweicom/domain/Order.hbm.xml" />
+</session-factory>
+</hibernate-configuration>
